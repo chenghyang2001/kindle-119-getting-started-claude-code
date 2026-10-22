@@ -11,3 +11,4 @@
 | 01 | 2026-10-22 | 5 分 | 自建最小 Express 專案取代讀者既有專案；全自動一次跑完（書上逐步人工把關＋Plan mode）；通知只做 console 不接 SendGrid；不開 PR |
 | 02 | 2026-10-22 | 3 分 | 用 uv 取代 venv＋pip；docs 用自寫 inspect 腳本產生（非 pdoc）以維持零依賴；Flask-Limiter 用 memory:// 不接 Redis；一個提示詞全自動跑完；pytest 21 passed |
 | 03 | 2026-10-22 | 10 分 | 三步各自 commit，但計畫沒經人工審核；交易用假 db 快照回滾；npm 預設裝 TypeScript 7 與 ts-jest 不相容，自動降到 5.9.3（耗時主因） |
+| 04 | 2026-10-22 | 3 分 | 舊專案與 bug 是自己先造的，探索/找原因少了真正摸索；Excel exporter 用 TSV 模擬；pytest 1 failed → 15 passed，doctest 3 passed |
