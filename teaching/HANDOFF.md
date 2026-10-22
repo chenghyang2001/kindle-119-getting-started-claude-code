@@ -15,3 +15,4 @@
 | 05 | 2026-10-22 | 3 分 | Redis 換記憶體 store、時鐘可注入免真等 60 秒；TDD 紅燈 commit 是模組不存在的 collection 錯誤；43 → 56 passed |
 | 06 | 2026-10-22 | 5 分 | 實裝 React 19／Vite 8／TS 7（較書新）；骨架手寫不用 npm create vite；用 claude -p 取代互動會話產元件＋hook；內層 claude -p 觸發本機全域 Stop hook 自動 commit；全域 CLAUDE.md 只寫範本到 templates/，md5 確認未變 |
 | 07 | 2026-10-22 | 6 分 | isolated（--setting-sources project,local）；開窗先跳「允許外部 CLAUDE.md 匯入」，用 ↓＋Enter 選允許（wt-send 只支援 Esc）；hook 寫 settings.local.json；用 claude -p＋stream-json＋標記字串客觀驗證（書上互動目視）；全域 settings.json 開窗時被改成 LF 換行（內容同），已從備份還原 |
+| 08 | 2026-10-22 | 4 分 | 衝突是兩個短命分支刻意改同一段 pricing.py；SendGrid 用 mock；不 push、不 gh pr create，改產生 PR.md；feature 分支未合回 main；main 7 passed、feature 9 passed |
