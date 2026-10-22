@@ -17,3 +17,4 @@
 | 07 | 2026-10-22 | 6 分 | isolated（--setting-sources project,local）；開窗先跳「允許外部 CLAUDE.md 匯入」，用 ↓＋Enter 選允許（wt-send 只支援 Esc）；hook 寫 settings.local.json；用 claude -p＋stream-json＋標記字串客觀驗證（書上互動目視）；全域 settings.json 開窗時被改成 LF 換行（內容同），已從備份還原 |
 | 08 | 2026-10-22 | 4 分 | 衝突是兩個短命分支刻意改同一段 pricing.py；SendGrid 用 mock；不 push、不 gh pr create，改產生 PR.md；feature 分支未合回 main；main 7 passed、feature 9 passed |
 | 09 | 2026-10-22 | 10 分 | 不接 PostgreSQL 改可注入記憶體 store；測試用 Vitest＋supertest（非 Jest）；ESLint 10 扁平設定，首次 lint 29 錯→0；實裝 TypeScript 6.0.3 與 typescript-eslint 相容未降版；耗時主因是修 lint 與裝套件 |
+| 10 | 2026-10-22 | 5 分 | claude -p 加分頁時沒拿掉 tenant 過濾（書上情境是被拿掉），所以「THAT FILTER MUST NOT BE TOUCHED」重做未實跑，只記錄 diff 檢查；交易用記憶體 undo log，另加出貨單補償取消；復原指令在暫存分支示範後刪除 |
