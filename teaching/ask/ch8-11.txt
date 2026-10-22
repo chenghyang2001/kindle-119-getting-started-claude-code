@@ -1,0 +1,324 @@
+Different notebook specified, starting new conversation...
+Continuing conversation 225a4b0a...
+Answer:
+以下為針對本書**第 8 章至第 11 
+章**，逐章整理的「讀者實際動手操作」步驟、指令、範例提示詞與環境需求：
+
+---
+
+### 第 8 章：Git 實戰工作流
+
+* **(a) 具體操作步驟與指令** [1]：
+  * **1. 原子提交 (Atomic Commits) 與 Commit 訊息產生**：
+    * **任務搭配自動 Commit 提示詞**：`Add email validation to the registration 
+form. Once it's working and the tests pass, commit.` [2]
+    * **重構獨立模組並 Commit 提示詞**：`Now extract that validation logic into 
+a separate module so we can reuse it. Commit when you're done.` [2]
+    * **Commit 前檢視 Diff 提示詞**：`Show me the diff of what you've changed 
+before committing.` [2]
+    * **僅產生 Commit 訊息供審查提示詞**：`Generate the commit message for the 
+current changes but don't commit. I want to review it first.` [3]
+    * **指定 Conventional Commits 格式提示詞**：`Generate a commit message in 
+Conventional Commits format for the staged changes. The scope is "auth".` [4]
+    * **本機 Git 提交指令**：`git commit -m "your edited message"` [3]
+  * **2. 合併前整理 Commit 歷史 (Squash)**：
+    * **提供 Commit 紀錄並詢問 Squash 計畫提示詞**：`We have these commits on 
+the current branch: . Some are minor fixes of previous commits. Which ones would
+you squash to clean up the history? Give me the plan before executing anything.`
+[4]
+    * **互動式 Rebase 指令**：`git rebase -i main` [4]
+  * **3. 分支開發全流程 (Working with Branches)**：
+    * **建立分支並實現功能提示詞**：`Create a branch called 
+feature/rate-limiting, implement rate limiting on the API using Redis, and make 
+atomic commits as you go.` [5]
+    * **背景執行的 Git 指令**：`git checkout -b feature/rate-limiting` [5], `git
+log feature/rate-limiting --oneline` [5]
+    * **請求分支工作摘要提示詞**：`Give me a summary of the commits you've made 
+on this branch and whether you think the work is complete.` [6]
+  * **4. 解決合併衝突 (Resolving Merge Conflicts)**：
+    * **單一檔案衝突解決提示詞**：`We have a merge conflict in src/pricing.py. 
+The HEAD branch added discount logic for premium users. The feature/promo-codes 
+branch refactored the function to support promo codes. Resolve the conflict by 
+combining both changes.` [7]
+    * **附帶雙方 Commit 意圖之衝突解決提示詞**：`Here are the commits from each 
+branch so you understand the context of the conflict: . The conflict is in 
+src/pricing.py. Resolve it.` [7, 8]
+    * **多檔案複雜衝突處置提示詞**：`We have three files with merge conflicts 
+after merging main into our refactoring branch. Our branch: 
+refactor/domain-model... Main received: support for Google OAuth... Please: 1. 
+Review all three conflicting files 2. Understand what each side is doing 3. 
+Propose the resolution for each one 4. Explain your reasoning before applying 
+changes` [8]
+  * **5. 暫存工作狀態 (Stash)**：
+    * **暫存當前進度提示詞**：`I need to switch to main to do an urgent hotfix. 
+Save the current work to stash with a descriptive message.` [9]
+    * **背景執行的 Git 指令**：`git stash push -m "feat: email validation half 
+done — still missing the blocked domain case"` [9]
+    * **切回後復原工作提示詞**：`What did I have in the stash from my last 
+session? Apply it if it looks right.` [9]
+    * **背景執行的 Git 指令**：`git stash list`, `git stash pop` [9]
+  * **6. Code Review 與開啟 PR**：
+    * **開 PR 前自我審查提示詞**：`Review all the changes on the current branch 
+compared to main. Look for: - Obvious security issues - Edge cases we're not 
+handling - Inconsistencies with the style of the rest of the codebase - Missing 
+tests for new logic` [10]
+    * **使用 GitHub CLI 切換至既有 PR**：`gh pr checkout 247` [10]
+    * **特定 PR 邏輯審查提示詞**：`Review the changes in this PR. It's a cache 
+implementation for the most frequent database queries. Pay special attention to 
+whether cache invalidation is well thought out for concurrent write scenarios.` 
+[10]
+    * **自動產生 PR 說明文字提示詞**：`Generate the PR description for this 
+branch. Include what the change does, how to test it manually, and what design 
+decisions we made.` [11]
+  * **7. 復原變更 (Reverting Changes)**：
+    * **取消上一次 Commit (保留修改)**：`The last commit broke the integration 
+tests. Undo the commit but keep the changes in the working directory so I can 
+fix them.` [12] （執行 `git reset HEAD~1` [12]）
+    * **撤銷已 Push 的 Commit**：`Commit a3f8c12 introduced a regression in the 
+payments module. I need to revert it without losing subsequent commits.` [12] 
+（執行 `git revert a3f8c12` [12]）
+    * **復原單一檔案至指定 Commit 狀態**：`I need to restore 
+src/models/payment.py to the state it was in at commit b7e2d45, without touching
+the rest of the files.` [13] （執行 `git checkout b7e2d45 -- 
+src/models/payment.py` [13]）
+  * **8. 實戰演練：密碼變更通知完整流程 (Password Change Notifications)**：
+    * **步驟 1（建立分支）**：`Create a branch 
+feature/password-change-notifications.` [14]
+    * **步驟 2（分段實作並 Commit）**：`On the current branch, implement sending
+an email when a user changes their password. Expected structure: - Email service
+in src/services/email.py (use SendGrid) - HTML email template in 
+src/templates/email/password_changed.html - Integration with password change 
+endpoint in src/api/auth.py (change_password function). Commit after each part.`
+[14]
+    * **要建立/修改的檔案**：`src/services/email.py` [14], 
+`src/templates/email/password_changed.html` [14], `src/api/auth.py` [14]。
+    * **步驟 3（編寫測試）**：`Add tests for: - The email service (mock 
+SendGrid) - The password change endpoint (verify the email service is called). 
+Commit when done.` [11]
+    * **步驟 4（自我審查與邏輯調整）**：`Review all the work on this branch. Is 
+there anything you'd change?` [11] 接著輸入：`If the email fails, log it as an 
+error but complete the password change anyway. The email isn't critical for the 
+operation. Implement that behavior and commit.` [11]
+    * **步驟 5（產生 PR 說明）**：`Generate the PR description for this branch. 
+Include what the change does, how to test it manually, and what design decisions
+we made.` [11]
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * **GitHub CLI 官方網址**：`` [15]。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：Git 版本控制工具 [1]、GitHub CLI (`gh`) [10, 15]、Terminal 
+終端機 [1]。
+  * **API key / 帳號**：GitHub 帳號 [10, 11]、SendGrid（範例中用於寄送 
+Email，單元測試時進行 Mock 模擬）[11, 14]。
+
+---
+
+### 第 9 章：日常實用食譜
+
+* **(a) 具體操作步驟與指令** [16]：
+  * **食譜 1：根據 Schema 建立 REST API (Create a REST API from a Schema)** [16,
+17]：
+    * **提示詞**：`I have this database schema for an inventory management 
+application. Create a REST API with Express and TypeScript that implements it. 
+Schema (PostgreSQL): - products (id, name, sku, price, stock, category_id, 
+created_at) - categories (id, name, parent_id) - movements (id, product_id, 
+quantity, type, reason, created_at). Requirements: - Full CRUD for products and 
+categories - Endpoint to record movements (stock in/out) - Data validation with 
+zod - Consistent error handling - No authentication for now` [17]
+    * **要建立的目錄與檔案**：`src/routes/` [17], `src/controllers/` [17], 
+`src/middleware/` [17]。
+  * **食譜 2：產生專案技術文件 (Generate Project Documentation)** [18]：
+    * **提示詞**：`Analyze the code in src/ and generate technical documentation
+for developers. I want three types of documentation: 1. API reference 2. 
+Architecture guide 3. Quick-start guide. Format: Markdown. One file per section 
+in docs/.` [18]
+    * **要建立的目錄與檔案**：`docs/` 目錄下的各個 Markdown 文件 [18]。
+  * **食譜 3：新增 JWT 驗證機制 (Add Authentication to an Existing Project)** 
+[19]：
+    * **提示詞**：`I need to add JWT authentication to this Express API. Current
+state: Express API with TypeScript in src/, PostgreSQL with Prisma, No 
+authentication. I want to implement: - Registration with email/password (bcrypt)
+- Login that returns access token (15 min) and refresh token (7 days) - 
+Authentication middleware - /auth/refresh endpoint - /auth/logout endpoint...` 
+[19]
+    * **修改/建立檔案**：`Prisma schema` [19]（新增 Refresh Token 
+資料表）、認證路由與 Middleware [19]。
+  * **食譜 4：第三方套件遷移 (Migrate from Moment.js to Day.js)** [20]：
+    * **提示詞**：`I need to migrate from Moment.js to Day.js in this project. 
+Find all uses of moment() in src/ and convert them to Day.js... Steps: 1. List 
+all files 2. Show original vs Day.js 3. Identify Day.js plugins needed 4. Update
+files 5. Generate config snippet...` [20]
+  * **食譜 5：撰寫自動化部署腳本 (Automation Scripts)** [21]：
+    * **提示詞**：`Create a deployment script in Bash for this Node.js 
+application... Requirements: - Abort and notify via Slack ($SLACK_WEBHOOK) - Log
+each step with timestamp - Idempotent - Optional --dry-run flag` [21]
+    * **要建立的檔案**：Bash 部署腳本（如 `deploy.sh`）[21]。
+  * **食譜 6：建立測試用 Mocks 與 Fixtures (Generate Mocks and Fixtures)** 
+[22]：
+    * **提示詞**：`Generate fixtures and mocks for the tests of this payments 
+module... Use Jest. Fixtures go in tests/fixtures/payments.ts and mocks in 
+tests/mocks/.` [22]
+    * **要建立的檔案**：`tests/fixtures/payments.ts` [22] 與 `tests/mocks/` 
+目錄下檔案 [22]。
+  * **食譜 7：從頭建立 CLI 工具 (Create a CLI Tool from Scratch)** [23]：
+    * **提示詞**：`Create a CLI in Node.js with TypeScript to manage database 
+environments. Commands needed: - db seed - db reset - db snapshot - db 
+restore... Technical requirements: Use Commander.js, Colored output (chalk), 
+Progress spinner (ora), Binary called "mydb"... Project structure: one file per 
+command in src/commands/.` [23]
+    * **要建立/修改的檔案**：`package.json` [24]（配置 `bin` 
+欄位）、入口點檔案、`src/commands/` 下的各個命令模組 [23, 24]。
+  * **食譜 8：優化慢 SQL 查詢 (Optimize Slow SQL Queries)** [24]：
+    * **提示詞**：`This query takes over 3 seconds in production... Analyze the 
+problem and propose solutions. [SEE SQL QUERY BELOW] EXPLAIN ANALYZE from 
+production: ` [24]
+  * **食譜 9：撰寫專業 README (Write a Professional README)** [25]：
+    * **提示詞**：`Analyze the code in this project and write a professional 
+README... The README should include: Project description, Prerequisites, 
+Step-by-step installation, Basic usage, Environment variables, Tests, How to 
+contribute, License.` [25]
+    * **要建立的檔案**：`README.md` [25]。
+  * **食譜 10：設定代碼品質工具與 Pre-commit Hooks (Linting, Formatting, 
+Hooks)** [26]：
+    * **提示詞**：`Set up code quality tooling for this TypeScript/Node.js 
+project. I want: 1. ESLint with TypeScript rules 2. Prettier for formatting 3. 
+Pre-commit hooks with Husky and lint-staged... Install necessary dependencies 
+and generate all config files.` [26]
+    * **要建立的檔案**：`.eslintrc.js`（或 
+`eslint.config.js`）[26]、`.prettierrc` [26]、`.husky/pre-commit` 
+[26]、`.lintstagedrc` [26]、`.editorconfig` [26]、修改 `package.json` [26]。
+  * **食譜 11：建立 Dockerfile 與 Docker Compose (Create Dockerfile)** [27]：
+    * **提示詞**：`Create an optimized Dockerfile for this Node.js/TypeScript 
+project in production... Multi-stage build... Also generate a docker-compose.yml
+for local development with app service, PostgreSQL 15, and hot reload.` [27]
+    * **要建立的檔案**：`Dockerfile` [28]、`.dockerignore` 
+[28]、`docker-compose.yml` [27, 28]。
+  * **食譜 12：解析與轉換資料腳本 (Parse and Transform Data)** [28, 29]：
+    * **提示詞**：`Write a TypeScript script that processes this CSV file of 
+products exported from our ERP... Input file at data/export.csv, output goes to 
+data/products.json.` [28, 29]
+    * **要建立的檔案**：資料處理腳本（如 
+`scripts/transform_products.ts`），執行後輸出 `data/products.json` [29]。
+  * **食譜 13：多國語系化應用程式 (Internationalize an Application)** [29, 30]：
+    * **提示詞**：`Add i18n to this Next.js application... support Spanish (es) 
+and English (en)... use next-intl... Steps: 1. Install and configure next-intl 
+2. Create translation files at messages/es.json and messages/en.json 3. Extract 
+text...` [29, 30]
+    * **要建立的檔案**：`messages/es.json` [30], `messages/en.json` [30]。
+  * **食譜 14：全新專案起手架 (Bootstrap a Project from Scratch)** [30]：
+    * **提示詞**：`Create the structure for a new project: a REST API with 
+Node.js, TypeScript, Express, and PostgreSQL.` [30]
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * 本章為實用食譜手冊，以讀者現有專案或空目錄進行演練，未提供特定的 GitHub 
+範例專案庫網址 [16]。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * 
+**外部環境**：Node.js、TypeScript、Express、PostgreSQL、Docker、Husky、ESLint、P
+rettier、Jest、Prisma、Commander.js 等開發環境與套件 [17, 23, 26, 27]。
+  * **API key / 帳號**：Slack Webhook URL（供部署腳本發送通知）[21]、Stripe / 
+SendGrid（測試 Mock 用）[22]。
+
+---
+
+### 第 10 章：除錯與復原
+
+* **(a) 具體操作步驟與指令** [31]：
+  * **1. 中斷暴走或偏離方向的 AI 操作**：
+    * **快捷鍵**：連續按下 `Ctrl+C` 兩次（`Ctrl+C` twice）可立即強行中斷 Claude 
+Code 當前執行的程式碼編輯或分析 [32]。
+  * **2. 檢查狀態、引導與清除記憶**：
+    * **檢查 Git 狀態指令**：`git status` [33], `git diff` [33]
+    * **給予具體約束之重新引導提示詞**：`The previous approach is too complex. I
+just need a function that reads a CSV and returns a list of dicts. No classes, 
+no extra modules, no elaborate error handling. Under 20 lines.` [33]
+    * **清除會話 Context 斜線指令**：`/clear` [32, 33]
+  * **3. 利用 Git 復原變更 (Git Safety Net)**：
+    * **捨棄單一檔案未 Commit 的修改**：`git restore src/auth/middleware.py` 
+[34]
+    * **捨棄所有未 Commit 的修改**：`git restore .` [34]
+    * **檢視最近 10 筆 Commit 歷史**：`git log --oneline -10` [34]
+    * **撤銷前一次 Commit 並保留變更至 Staging**：`git reset --soft HEAD~1` [34,
+35]
+    * **徹底捨棄前一次 Commit 及其所有變更**：`git reset --hard HEAD~1` [34, 35]
+    * **徹底捨棄變更並回到指定 Commit**：`git reset --hard abc1234` [34]
+    * **已 Push 至遠端時的撤銷指令**：`git revert HEAD` 接著執行 `git push` [34]
+    * **重構前建立安全檢查點 Commit**：`git add -A && git commit -m "checkpoint:
+before refactoring authentication"` [35]
+  * **4. 捕捉幻覺與修正安全性 Bug 實戰（防止多租戶隔離過濾器被誤刪）**：
+    * **檢視 Diff 發現過濾器遺失**：`git diff src/api/search.py` [36]
+    * **還原檔案指令**：`git restore src/api/search.py` [36]
+    * **加入強約束之重新提示詞**：`The search endpoint in src/api/search.py 
+filters by tenant_id on line 47. THAT FILTER MUST NOT BE TOUCHED UNDER ANY 
+CIRCUMSTANCES. Add pagination with page and page_size parameters, keeping all 
+existing filters exactly as they are.` [36]
+  * **5. 模稜兩可需求修復實戰 (`process_pending_orders`)**：
+    * **附帶精準步驟與交易約束之提示詞**：`Write a function called 
+process_pending_orders() that does exactly this, in this order: 1. Get all 
+orders with status 'pending' from the orders table 2. For each order, verify 
+there's enough stock by calling inventory.check_availability(product_id, 
+quantity) 3. If there's stock, reserve it with inventory.reserve(product_id, 
+quantity) and update the order to status 'processing' 4. Generate a delivery 
+note number with warehouse.create_delivery_note(order_id) 5. Send a notification
+to the warehouse with warehouse.notify(delivery_note_id) 6. If there's no stock,
+leave the order as 'pending' and log a warning. The function must be 
+transactional: if any step fails, roll back the changes to the order and the 
+inventory.` [37]
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * 本章為除錯觀念與緊急復原步驟說明，未提供特定的 GitHub 範例專案網址 [31]。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：Terminal 終端機、Git 版本控制工具 [31, 34]。
+  * **API key / 帳號**：登入完成的 Claude Code CLI [31]。
+
+---
+
+### 第 11 章：代理式程式設計入門
+
+* **(a) 具體操作步驟與指令** [38]：
+  * **1. 使用非互動式 CLI 標籤 (`-p` / `--print`)**：
+    * 在 Terminal 中直接執行帶有 `-p` 標籤的指令，輸出結果會直接傳回 
+stdout（適用於自動化腳本）：
+      ```bash
+      claude -p "Review this file for performance bottlenecks"
+      ``` [38, 39]
+  * **2. 專屬任務提示詞範例（生產環境效能排查）**：
+    * **提示詞**：`Task: Investigate why the /api/orders endpoint takes more 
+than 2s in production. You have access to the Datadog logs, the staging database
+(read-only), and the source code. Propose a fix and open a PR.` [40]
+  * **3. 事件驅動自動化：Git Pre-push Hook 自動安全審查**：
+    * **要建立的 Hook 檔案**：`.git/hooks/pre-push` [40]
+    * **Bash 腳本內容**：
+      ```bash
+      #!/bin/bash
+      # .git/hooks/pre-push
+      diff=$(git diff origin/main...HEAD)
+      result=$(echo "$diff" | claude -p "Review this diff for security 
+vulnerabilities. If you find any critical ones, respond with 'BLOCK' followed by
+the explanation. If everything is fine, respond 'OK'.")
+
+      if echo "$result" | grep -q "^BLOCK"; then
+          echo "Push blocked by Claude Code:"
+          echo "$result"
+          exit 1
+      fi
+      ``` [40]
+  * **4. CI/CD 與 Cron Job 自動化架構**：
+    * 建立 Cron Job 腳本定時透過 API 觸發 Claude 檢視未解決的 Issue，並自動呼叫 
+GitHub API 開啟修正 PR [41]。
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * **GitHub CLI 官方網址**：`` [15]（代理人透過 `gh` 工具自動建立 Issue 與 
+PR）。
+  * **書籍進階系列與資源網站**：`learnaipress.com` [15, 42]。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：Terminal 終端機、Git（支援 Git Hooks 腳本執行）[40]、GitHub 
+CLI (`gh`) [15]、Datadog (讀取 Logs) [40]、Staging 唯讀資料庫 [40]、CI/CD 
+執行環境（如 GitHub Actions Runner）[40]。
+  * **API key / 帳號**：Anthropic Claude API Key（用於 Cron Job 或 CI/CD 
+自動化腳本）[41]、GitHub API Token / 帳號（供代理人自動推送分支與創建 PR）[40, 
+41]。
+
+---
+
+💡 本書全書（前言與第 1-11 
+章）的實際動手操作步驟、斜線指令、建立檔案與提示詞已整理完成！若需要進一步針對特
+定章節的提示詞進行客製化或延伸應用，歡迎隨時告訴我！
+
+Resumed conversation: 225a4b0a-d6be-43df-b83e-30d837c1787c

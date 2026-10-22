@@ -1,0 +1,88 @@
+{
+  "book": "K119",
+  "repo": "kindle-119-getting-started-claude-code",
+  "title": "Getting Started with Claude Code",
+  "prompt_source": "teaching/LESSON-PLAN.md",
+  "chapters": [
+    {
+      "id": "01",
+      "folder": "k119-ch01-practice",
+      "mode": "normal",
+      "minutes": 6,
+      "parallel_with": []
+    },
+    {
+      "id": "02",
+      "folder": "k119-ch02-practice",
+      "mode": "normal",
+      "minutes": 10,
+      "parallel_with": []
+    },
+    {
+      "id": "03",
+      "folder": "k119-ch03-practice",
+      "mode": "normal",
+      "minutes": 8,
+      "parallel_with": []
+    },
+    {
+      "id": "04",
+      "folder": "k119-ch04-practice",
+      "mode": "normal",
+      "minutes": 8,
+      "parallel_with": []
+    },
+    {
+      "id": "05",
+      "folder": "k119-ch05-practice",
+      "mode": "normal",
+      "minutes": 8,
+      "parallel_with": []
+    },
+    {
+      "id": "06",
+      "folder": "k119-ch06-practice",
+      "mode": "normal",
+      "minutes": 6,
+      "parallel_with": [],
+      "note": "全域 ~/.claude/CLAUDE.md 只寫範本到 templates/，不可修改"
+    },
+    {
+      "id": "07",
+      "folder": "k119-ch07-practice",
+      "mode": "isolated",
+      "minutes": 8,
+      "parallel_with": [],
+      "note": "要觀察專案層 hook／agent／skill，排除全域設定；首次開窗可能先跳「允許外部 CLAUDE.md 匯入」要選允許"
+    },
+    {
+      "id": "08",
+      "folder": "k119-ch08-practice",
+      "mode": "normal",
+      "minutes": 8,
+      "parallel_with": []
+    },
+    {
+      "id": "09",
+      "folder": "k119-ch09-practice",
+      "mode": "normal",
+      "minutes": 10,
+      "parallel_with": []
+    },
+    {
+      "id": "10",
+      "folder": "k119-ch10-practice",
+      "mode": "normal",
+      "minutes": 7,
+      "parallel_with": []
+    },
+    {
+      "id": "11",
+      "folder": "k119-ch11-practice",
+      "mode": "normal",
+      "minutes": 7,
+      "parallel_with": [],
+      "note": "pre-push hook 只直接執行腳本模擬，不真的 push"
+    }
+  ]
+}

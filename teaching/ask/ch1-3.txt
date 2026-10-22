@@ -1,0 +1,204 @@
+Different notebook specified, starting new conversation...
+Continuing conversation 225a4b0a...
+Answer:
+以下為針對本書**前言**與**第 1 至 3 
+章**，逐章整理的「讀者實際動手操作」清單與相關資訊：
+
+---
+
+### 前言：前言與準備工作
+
+* **(a) 具體操作步驟與指令**：
+  * **安裝驗證**：在開啟終端機（Terminal）後，可執行以下指令確認 Claude Code 
+是否已正確安裝於環境中 [1]：
+    ```bash
+    claude --version
+    ```
+  * 
+**操作說明**：前言主要為觀念導入與環境準備説明，未包含斜線指令或特定檔案建立流程
+[1, 2]。
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * **官方安裝文件網址**：`code.claude.com`（提供逐步安裝與設定教學）[2]。
+  * **書籍系列網站**：`learnaipress.com` [3]。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：Terminal 終端機，需熟悉 Command Line、Git 
+基本操作及任一程式語言 [1, 2]。
+  * **帳號與 API Key**：需具備 Anthropic 
+帳號，並有可用額度（Credit）或有效的訂閱方案（Active Subscription）[1]。
+  * **練習專案**：需準備一個本機現有的程式碼專案庫（任何語言均可）以供後續練習 
+[1]。
+
+---
+
+### 第 1 章：Claude Code 的一天
+
+『無』
+
+**本章重點說明**：本章以「電影預告片」的形式展示完整的實戰流程，呈現開發者如何在
+80 分鐘內透過 Claude Code 完成 30,000 行 Node.js 
+專案的探索、架構設計、功能實現及 PR 審查 [4, 5]。
+
+*(註：本章為概念展示，書中並未提供供讀者下載操作的實際專案庫，但示範了以下重點提
+示詞與情境 [5]）：*
+* **展示之範例提示詞**：
+  * **探索程式碼**：`> I just joined this project. I need to implement a 
+notification system (email, webhooks, and real-time events). Before writing 
+anything, explore the codebase: overall architecture, patterns in use, how side 
+effects are handled, and where a notification system would fit. Give me a map of
+the project.` [5]
+  * **架構提案**：`> Propose the complete architecture for the notification 
+system... Show me the file structure you'd create and a summary of each file. 
+Don't write any code yet.` [6]
+  * **調整並實現**：`> Good. One change: no separate router. The test routes and
+the SSE endpoint go in src/shared/routes.js under /admin/. Everything else, go 
+ahead. Implement the full notifications module.` [7]
+  * **資深審查**：`> Act as a tech lead reviewing this PR. Review everything 
+you'd created in src/notifications/ and everything you'd modified in 
+src/shared/...` [8]
+  * **提交與開啟 PR**：`> Create a commit with all the changes and open a PR 
+against main...` [9]
+* **環境與變數**：示範情境涉及 Node.js 20 REST API（Express）與 SendGrid API Key
+等環境變數配置 [5, 7]。
+
+---
+
+### 第 2 章：上手第一小時
+
+* **(a) 具體操作步驟與指令**：
+  * **啟動與安全性信任檢查**：
+    * 移動至本機既有專案目錄並啟動 Claude Code [10]：
+      ```bash
+      cd ~/proyectos/my-api
+      claude
+      ```
+    * 初次啟動時輸入 `1` 選取 `1. Yes, I trust this folder` 通過目錄安全檢查 
+[11]。
+  * **基本對話與提案確認**：
+    * **專案總覽提示詞**：`Explain what this project does in three lines` [12]。
+    * **新增檔案提示詞**：`Add a .gitignore file for Python if one doesn't 
+exist` [12]。
+  * **YOLO 模式（免確認模式）與文件生成**：
+    * **啟動指令**：使用免確認標籤啟動 Claude [13]：
+      ```bash
+      claude --dangerously-skip-permissions
+      ```
+    * **生成 HTML 文件提示詞**：`Generate HTML documentation for this project. 
+Analyze all Python modules, extract the docstrings, and create a docs/index.html
+file with the project structure, what each module does, and the main functions. 
+Use clean semantic HTML with no external dependencies.` [13]。
+    * **建立檔案**：`docs/index.html` [14]。
+  * **撰寫與執行單元測試**：
+    * **針對既有函式新增測試提示詞**（以 `utils/calculator.py` 為例）：`Add 
+tests for the calculate_discounted_price function in utils/calculator.py. Use 
+pytest. Cover the happy paths, edge cases, and exceptions.` [14, 15]。
+    * **補充測試案例提示詞**：`Approve, but also add a test for 
+customer_code=None explicitly` [15]。
+    * **建立檔案**：`tests/test_calculator.py` [16]。
+    * **執行測試提示詞**：`Run the tests with pytest and show me the 
+results`（Claude 背景執行 `pytest tests/test_calculator.py -v`）[16]。
+    * **摘要 Diff 修改提示詞**：`Summarize what you changed and why, in three 
+bullet points` [17]。
+  * **Claude Code 斜線指令 (Slash Commands)** [17, 18]：
+    * `/help`：顯示所有可用指令與快捷鍵說明 [17]。
+    * `/status`：檢視 Context 用量與會話狀態（可搭配 `/cost` 檢視 token 
+費用）[18]。
+    * `/clear`：清除當前對話 Context 
+記憶並開啟新會話（磁碟上修改的程式碼會保留）[18]。
+    * `/model`：中途切換使用的 AI 模型 [18]。
+  * **實戰完整演練（Flask API Rate Limiting）** [18, 19]：
+    * **1. 上下文諮詢**：`I have a Flask endpoint /api/quote that needs rate 
+limiting. I want to limit it to 10 requests per minute per IP address. What are 
+the options and which one do you recommend for this case?` [18]。
+    * **2. 實作功能**：`Implement rate limiting with Flask-Limiter. Limit the 
+/api/quote endpoint to 10 requests per minute per IP. If the limit is exceeded, 
+return a JSON response with a 429 error and the message "Rate limit exceeded. 
+Try again in a minute."` [19]。
+    * **修改/建立檔案**：`requirements.txt` 及 `app.py` [19]。
+    * **3. 驗證測試**：`Add a test that verifies the rate limiting works 
+correctly. Simulate 11 consecutive requests and verify that the eleventh returns
+429.` [19]。
+    * **4. 最終審查**：`Review the code you just added. Is there anything you'd 
+improve in terms of security or maintainability?` [19]。
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * 本章以讀者本機既有專案（如 Python/Node.js/Rails 
+專案）作為實作對象，未提供特定 GitHub 下載連結 [10]。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：Terminal 終端機、Python 執行環境，以及測試與 Web 套件（如 
+`pytest`、`Flask`、`Flask-Limiter`）[14, 16, 19]。
+  * **API key / 帳號**：已綁定並登入 Anthropic API Key 的 Claude Code CLI [1, 
+10]。
+
+---
+
+### 第 3 章：提問的藝術
+
+* **(a) 具體操作步驟與指令**：
+  * **設定 Session Context（建立會話背景資訊）**：
+    * **會話開場提示詞**：`Session context: I'm working on a REST API with 
+FastAPI and PostgreSQL. The project uses SQLAlchemy as the ORM, Alembic for 
+migrations, and pytest for tests. The codebase is about 8,000 lines of Python. 
+I'm going to ask you for several changes in this session.` [20]。
+    * **完整 Context + Goal + Constraints 提示詞**：`I'm working on the 
+registration form of a Next.js 14 app with React Hook Form and Zod. I need to 
+add validation for the "username" field: it should be between 3 and 20 
+characters, only lowercase letters, numbers, and underscores, and it can't start
+with a number. The rest of the form already uses Zod so I want it to be 
+consistent. Don't touch the fields that already have validation.` [21, 22]。
+  * **先要求計畫，再動手（Ask for Plan First）**：
+    * **要求計畫提示詞**：`Before doing anything, explain how you'd approach 
+migrating authentication from JWT to sessions with Redis. What files you'd 
+touch, in what order, and what risks you see. Don't write code yet.` [20]。
+    * **給予執行綠燈提示詞**：`The plan makes sense. Start with step 1. When 
+you're done, stop and show me the result before continuing.` [23]。
+  * **精準反饋循環（Iterative Feedback）**：
+    * **精準修正提示詞**：`Almost, but there's a problem: you're using 
+Promise.all for the database calls, and that can saturate the connection pool if
+the array is large. I want you to make them sequential with a for...of loop, not
+in parallel.` [23]。
+    * **單一問題優先提示詞**：`The first thing I need to fix is the error 
+handling: right now you're swallowing the database errors and returning 200. I 
+want you to rethrow them and let the error middleware handle them. We'll look at
+the types after.` [24]。
+  * **實戰演練 1：分層重構複雜函式 (`processOrder`)** [25, 26]：
+    * **步驟 1（詢問計畫）**：`I have a processOrder function in TypeScript with
+excessive nesting that mixes validations with business logic. Before changing 
+anything, explain how you'd refactor it. Keep in mind that the project uses Jest
+for tests and the function has existing tests that must keep passing.` [26]。
+    * **步驟 2（重構驗證邏輯）**：`The approach is correct. Start with the 
+validations: extract each check into a function with a name that explains what 
+it validates. Use early returns to flatten the nesting. Don't touch the 
+inventory update logic or the email sending yet.` [26]。
+    * **步驟 3（重構資料庫寫入）**：`The validations look good. Now refactor the
+write operations: I want db.inventory.update and db.orders.update wrapped in a 
+transaction. Look at how transactions are done elsewhere in the project before 
+writing it.` [26]。
+  * **實戰演練 2：具備完整技術約束的資料庫 Migration** [27]：
+    * **Alembic Migration 提示詞**：
+      ```text
+      I need an Alembic migration to add a 'subscriptions' table in PostgreSQL.
+      Constraints:
+      - The table must have a FK to 'users.id' with ON DELETE CASCADE
+      - The 'plan' field is an enum with values: 'free', 'pro', 'enterprise'
+      - 'started_at' and 'expires_at' are TIMESTAMP WITH TIME ZONE, not nullable
+      - Add an index on (user_id, expires_at) because we'll be querying active 
+subscriptions frequently
+      - The migration must be reversible (include downgrade)
+      - Don't use server_default for the timestamps — we'll manage them from the
+application
+      Look at the file migrations/versions/20240115_add_users.py to follow this 
+project's conventions.
+      ``` [27]
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * 本章涵蓋 TypeScript/Jest、Next.js 14、FastAPI/PostgreSQL 以及 Alembic 
+Migration 等範例情境，未包含特定 GitHub 網址 [20, 22, 26, 27]。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：終端機，以及對應專案的開發環境（如 Node.js / TypeScript / Jest
+或 Python / FastAPI / SQLAlchemy / Alembic / PostgreSQL）[20, 26, 27]。
+  * **API key / 帳號**：登入完成的 Claude Code CLI [1, 21]。
+
+---
+
+💡 想繼續整理後續章節（如第 4-5 章關於既有程式碼維護與 AI 
+測試安全網）的實戰指令嗎？
+
+Resumed conversation: 225a4b0a-d6be-43df-b83e-30d837c1787c

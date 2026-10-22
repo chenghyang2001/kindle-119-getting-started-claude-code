@@ -1,0 +1,346 @@
+Different notebook specified, starting new conversation...
+Continuing conversation 225a4b0a...
+Answer:
+以下為針對本書**第 4 章至第 7 
+章**，逐章整理的「讀者實際動手操作」清單與相關資訊：
+
+---
+
+### 第 4 章：既有程式碼
+
+* **(a) 具體操作步驟與指令**：
+  * **1. 遞進式探索與理解檔案 (Progressive Discovery)**：
+    * **單一檔案理解提示詞**：`Read src/auth/middleware.py and explain what it 
+does. I want to understand the business logic, not just the mechanics.`
+    * **接手無文件專案架構探索提示詞**：`I just inherited this project and I 
+have no documentation. Can you explore the repository structure and tell me: 1. 
+What this application does 2. What the main modules are and their purpose 3. 
+What technologies it uses and why 4. Which parts look the most complex or 
+critical`
+    * **追蹤資料流提示詞**：`Got the general structure. Now walk me through the 
+flow of a typical  operation. What happens from the moment a request comes in to
+when the response goes out? Read whatever files you need to.`
+    * **深入複雜模組提示詞**：`You mentioned that src/pipeline/transformer.py is
+complex. Read it and explain it to me in detail. Especially the data 
+transformation logic and why there's that huge try/except block on line 87.`
+  * **2. 輔助除錯 (Assisted Debugging)**：
+    * **失敗測試排查提示詞**：`This test is failing and I don't understand why: 
+FAILED tests/test_billing.py::test_proration_calculation AssertionErr: assert 
+45.83 == 45.84. Can you read tests/test_billing.py and src/billing/proration.py 
+and help me understand what's going on?`
+    * **線上生產環境 Bug 緊急處置提示詞**：`Production bug. Payment system is 
+down. Users can't complete checkout. Error in Sentry (last 10 minutes, 847 
+occurrences): Stripe::CardError: Your card was declined at 
+src/payments/stripe_client.rb:43:in 'charge'. Read src/payments/stripe_client.rb
+and src/orders/checkout.rb`
+    * **最小修復提案提示詞**：`Found it: in stripe_client.rb line 43... Can you 
+make the minimum fix needed for production? We'll do the complete fix with tests
+afterward.`
+  * **3. 依循既有架構新增功能 (Adding Features)**：
+    * **分析既有 Pattern 提示詞**：`I need to add a new endpoint for exporting 
+invoices to PDF. There's already CSV export in src/export/csv_generator.py and 
+Excel export in src/export/excel_generator.py. Can you analyze these two files 
+and explain the pattern they follow, so my PDF implementation stays consistent 
+with the rest?`
+  * **4. 自動補全文件 (Documentation Generation)**：
+    * **函式 Docstring 提示詞**：`Read src/auth/token_service.py and add 
+docstrings to all public functions. Follow Google Style format (Args, Returns, 
+Raises). Don't document the obvious: focus on non-obvious behavior and edge 
+cases.`
+    * **模組說明提示詞**：`Generate a module docstring for 
+src/billing/proration.py that explains what this module does, when it's used, 
+and the assumptions about the billing calendar that the proration logic makes.`
+    * **資料夾技術 README 提示詞**：`Generate a README.md for the src/export/ 
+directory that explains the exporter architecture, how to add a new format, and 
+external dependency requirements.`
+    * **要建立的檔案**：`src/export/README.md`。
+  * **5. 安全重構 (Refactoring Without Breaking)**：
+    * **保持介面相容重構提示詞**：`I need to refactor 
+src/utils/data_processor.py. The process_batch() function is 200 lines long and 
+does too many things. But I can't break the public interface because there are 
+15 files that call it. Can you: 1. Analyze what distinct responsibilities that 
+function has 2. Propose how to split it while keeping the current interface 3. 
+Do it in steps I can verify with the existing tests`
+  * **6. 相依套件版本升級影響評估**：
+    * **提示詞**：`I want to update Django from 3.2 to 4.2. Can you review the 
+project and tell me which parts of the code are most at risk of being affected? 
+Look for deprecated API usage, patterns that have changed, and anything you know
+changed between those versions.`
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * 本章以讀者本機現有的真實既有專案（Legacy 
+Repository）作為操作對象，未提供特定 GitHub 下載網址。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：本機現有專案庫（Python、Ruby/Rails、Django、Node.js 
+等語言均可）、Terminal 終端機。
+  * **API key / 帳號**：已綁定並登入 Anthropic API Key 的 Claude Code CLI。
+
+---
+
+### 第 5 章：AI 測試安全網
+
+* **(a) 具體操作步驟與指令**：
+  * **1. 無測試程式碼補齊測試**：
+    * **撰寫有用單元測試提示詞**：`Write tests for payments/processor.py. I 
+want: - Cases where the card is expired - Cases where the payment gateway 
+returns a timeout`
+    * **邊界與安全漏洞測試提示詞**：`Read the code in auth/tokens.py. Now act 
+like someone trying to find a security bug or make the system behave 
+incorrectly. What inputs would you try? Write tests for those cases.`
+  * **2. 輔助 TDD 工作流 (Assisted TDD)**：
+    * **Step 1 先要求生成測試提示詞**：`I want to implement a rate limiter for 
+my API. Before implementing it, write the tests it should pass: - Maximum 100 
+requests per minute per IP - The counter resets every 60 seconds exactly - 
+Whitelisted IPs have no limit - When the limit is exceeded, return 429 with the 
+correct Retry-After header - The limit is per IP, not global. Write only the 
+tests, with all the necessary mocks. I'll do the implementation later.`
+    * **Step 2 實現程式碼提示詞**：`Now implement RateLimiter in 
+src/middleware/rate_limiter.py so that all the tests you just wrote pass. Use 
+Redis for storage.`
+    * **建立/修改檔案**：`tests/test_rate_limiter.py` 與 
+`src/middleware/rate_limiter.py`（或 `utils/validators.py`）。
+  * **3. 整合測試與 E2E 測試**：
+    * **整合測試提示詞**：`Write integration tests for the user registration 
+flow: 1. The POST /api/users endpoint receives email and password 2. Validates 
+the email format (using EmailValidator) 3. Hashes the password with bcrypt 4. 
+Saves to PostgreSQL (users table) 5. Sends a welcome email via SendGrid 6. 
+Returns 201 with the user_id. Mock SendGrid and use a real test database (I 
+already have fixtures). Cover: successful registration, duplicate email, invalid
+email format, password too short, database failure.`
+    * **Playwright E2E 測試提示詞**：`Write E2E tests with Playwright for my 
+e-commerce checkout flow. The user: searches for a product, adds it to the cart,
+enters card details (use Stripe's test data: 4242 4242 4242 4242), completes the
+purchase, sees the confirmation page with an order number. The base URL is 
+localhost:3000. Use page object model. Write the tests in TypeScript.`
+  * **4. 重構後更新既有測試**：
+    * **提示詞**：`I just refactored OrderProcessor. The process_order() method 
+now accepts an Order object instead of separate parameters... Here are the 
+current tests:  Here's the new code: . Update the tests so they work with the 
+new interface, keeping the same case coverage.`
+  * **5. 實戰演練：30 分鐘為舊模組建立安全網與 REST API TDD**：
+    * **詢問計畫提示詞**：`I'm going to give you three files from a payments 
+module (processor.py, validators.py, gateway.py). I need a complete test suite. 
+Read all the files before generating anything. Before writing the tests, tell 
+me: 1. What main functionalities you've identified 2. What edge cases you think 
+are critical 3. How you'd structure the test files`
+    * **針對驗證邏輯生成測試提示詞**：`Generate the tests for validators.py 
+first. I want special coverage for card number validation (Luhn algorithm), 
+expiration dates, and CVV. Use pytest with parametrize for the validation 
+cases.`
+    * **Mock 外部服務提示詞**：`Now the tests for processor.py. Mock the gateway
+completely. Especially cover: transactions that Stripe rejects, timeouts, 
+retries, and the state of the Payment object after each scenario.`
+    * **測試除錯修正提示詞**：`This test fails with: AttributeError: 
+'PaymentResult' object has no attribute 'transaction_id'. The attribute is 
+called 'stripe_charge_id'. Fix the affected tests.`
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * 未提供特定的 GitHub 範例專案網址，採用 
+Python/pytest、TypeScript/Jest、Playwright 或 Cypress 於本機測試。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：本機單元測試框架（如 `pytest`、`Jest`、`Vitest`）、E2E 
+測試框架（如 `Playwright`、`Cypress`）、Redis/PostgreSQL 資料庫（選配）。
+  * **API Key / 帳號**：Stripe、SendGrid（實務上會在測試中使用 Mock 模擬，E2E 
+測試時使用 Stripe 測試卡號 `4242...`）。
+
+---
+
+### 第 6 章：CLAUDE.md 基本規則
+
+* **(a) 具體操作步驟與指令**：
+  * **1. 建立專案規範檔案 (CLAUDE.md)**：
+    * 在專案根目錄建立 `CLAUDE.md`，手動或由 Claude 生成團隊規範。
+    * **要建立的檔案與路徑**：
+      * `./CLAUDE.md`（專案根目錄，團隊共有，需版控）
+      * `~/.claude/CLAUDE.md`（個人全域家目錄，可選）
+      * `./services/api/CLAUDE.md` 或 
+`./src/api/CLAUDE.md`（特定子目錄階層，可選）
+  * **2. 檔案內容撰寫範例 (以 React + TypeScript 專案為例)**：
+    ```markdown
+    # CLAUDE.md
+
+    ## Stack
+    - React 18 with TypeScript 5.3
+    - Vite as bundler
+    - TanStack Query for data fetching
+    - Zustand for global state
+    - Tailwind CSS for styling
+
+    ## Component Conventions
+    - Components in PascalCase, one component per file
+    - Props always typed with interfaces, never with type alias
+    - Custom hooks start with `use` and go in `src/hooks/`
+    - Never use `any`. If you need to escape the type system, use `unknown` and 
+add a comment explaining why
+
+    ## Folder Structure
+    - `src/components/` — reusable components
+    - `src/pages/` — page components (routes)
+    - `src/hooks/` — custom hooks
+    - `src/store/` — Zustand slices
+    - `src/api/` — fetching functions (no business logic)
+
+    ## Patterns
+    - Data fetching always with TanStack Query, never with useEffect directly
+    - Server state: TanStack Query. Local state: useState. Global UI state: 
+Zustand
+    - Page components don't fetch directly, they delegate to hooks
+
+    ## Prohibitions
+    - Don't install dependencies without asking first
+    - Don't use Redux (migrated to Zustand)
+    - Don't use CSS modules or styled-components (we use Tailwind)
+    - Don't modify `vite.config.ts` without consulting
+
+    ## Tests
+    - Vitest + Testing Library
+    - Run: `npm test`
+    - Tests go in `__tests__/` next to the file they test
+    ```
+  * **3. 操作說明**：
+    * **無斜線指令**：Claude Code 啟動時會**自動讀取並合併**各階層的 
+`CLAUDE.md`（優先順序：特定子目錄 > 專案根目錄 > 全域 `~/.claude/CLAUDE.md`）。
+    * **持續迭代**：若在會話中發現 Claude 
+做了不符合規範的事（如把測試放在根目錄），可隨手將修正規則寫入 
+`./CLAUDE.md`，未來會話便會永久遵守。
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * 本章提供 React/TypeScript、Go (Chi/PostgreSQL)、Backend Django 等多種 Stack 
+範例，未提供特定 GitHub 專案庫網址。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：文字編輯器（用於編輯 `.md` 檔案）。
+  * **API key / 帳號**：使用已安裝的 Claude Code 即可。
+
+---
+
+### 第 7 章：.claude 資料夾
+
+* **(a) 具體操作步驟與指令**：
+  * **1. 建立 `.claude` 工具箱目錄結構**：
+    在專案根目錄（或全域家目錄 `~/.claude/`）建立以下目錄結構：
+    ```text
+    .claude/
+    ├── CLAUDE.md
+    ├── commands/
+    ├── agents/
+    ├── skills/
+    ├── rules/
+    └── settings.json
+    ```
+  * **2. 建立與呼叫自訂斜線指令 (Custom Commands)**：
+    * **建立 PR 審查指令檔案**：`.claude/commands/review-pr.md`
+      ```markdown
+      <!-- .claude/commands/review-pr.md -->
+      Review the current PR changes following these steps:
+      1. Run `git diff main...HEAD` to see all changes
+      2. Identify potential security issues
+      3. Verify there are tests for the new functionality
+      4. Check that the code follows the conventions in CLAUDE.md
+      5. Summarize findings in a list with severity (critical/medium/low)
+      If you find critical issues, show them first.
+      ```
+    * **呼叫斜線指令**：在對話中輸入：
+      ```text
+      /review-pr
+      ```
+    * **建立帶參數的指令檔案**：`.claude/commands/explain.md`
+      ```markdown
+      <!-- .claude/commands/explain.md -->
+      Explain the file or function $ARGUMENTS clearly and concisely.
+      Include:
+      - What it does and why it exists
+      - Important dependencies
+      - Edge cases it handles
+      ```
+    * **帶參數呼叫指令**：
+      ```text
+      /explain src/auth/middleware.ts
+      ```
+    * *(全域指令：可放置於 `~/.claude/commands/`，如 
+`standup.md`、`check-deps.md`、`todo.md`)*。
+  * **3. 建立專長技能 (Skills)**：
+    * **建立技能檔案**：`.claude/skills/security-checker/SKILL.md`
+      ```markdown
+      <!-- .claude/skills/security-checker/SKILL.md -->
+      # Security Checker
+
+      ## Description
+      Specialist in detecting security vulnerabilities in code.
+
+      ## When to activate
+      When reviewing code or when security topics are mentioned.
+
+      ## Instructions
+      - Look for SQL injection, XSS, CSRF, and the OWASP Top 10
+      - Verify that user inputs are validated and sanitized
+      - Check that credentials are not hardcoded
+      - Review that dependencies have no known CVEs
+      - Classify each finding: critical, high, medium, low
+      ```
+    * **觸發方式**：無須斜線指令，當對話提及相關主題或進行 Code Review 
+時，Claude 會**自動啟用**該技能。
+  * **4. 建立自訂代理人 (Custom Agents)**：
+    * **建立代理人檔案**：`.claude/agents/reviewer.md`
+      ```markdown
+      <!-- .claude/agents/reviewer.md -->
+      ---
+      name: Reviewer
+      description: Reviews code for bugs, security, and style
+      model: sonnet
+      tools:
+        - Read
+        - Grep
+        - Glob
+      ---
+
+      You are an experienced code reviewer. Your job is to find problems before 
+they reach production.
+
+      ## Rules
+      - Review each file individually
+      - Classify findings by severity: critical, high, medium, low
+      - Don't report style issues already covered by the linter
+      - Prioritize: security > correctness > performance > readability
+      - If you find no problems, say so clearly. Don't make things up.
+      ```
+  * **5. 設定 Hooks 與細粒度 Rules**：
+    * **設定工具執行前後 Hook 檔案**：`.claude/settings.json`
+      ```json
+      {
+        "hooks": {
+          "PreToolUse": [
+            {
+              "matcher": "Edit",
+              "command": "echo 'Claude is about to edit a file'"
+            }
+          ],
+          "PostToolUse": [
+            {
+              "matcher": "Bash",
+              "command": "./scripts/validate-after-change.sh"
+            }
+          ]
+        }
+      }
+      ```
+    * **建立獨立規則檔案**：`.claude/rules/no-console-log.md`
+      ```markdown
+      <!-- .claude/rules/no-console-log.md -->
+      Never use console.log for debugging in production code.
+      Use the project's logger (src/utils/logger.ts).
+      ```
+  * **6. 實戰組合工作流**：
+    * 建立組合命令 `.claude/commands/review.md` 後，輸入 `/review` 
+可同時觸發獨立執行的 `reviewer` Agent 進行審查，並結合 `security-checker` Skill 
+的專業安全知識。
+* **(b) 書中提到的範例專案或 GitHub 網址**：
+  * 無特定 GitHub 範例專案網址，上述組態皆建立於讀者專案本機的 `.claude/` 
+資料夾內。
+* **(c) 需要的外部環境、API key 或帳號**：
+  * **外部環境**：Git 版本管制（用以將 `.claude/` 工具箱推至 GitHub/GitLab 
+專案庫供團隊共享）、Bash 執行環境（供 Hooks 腳本觸發）。
+  * **API key / 帳號**：已啟動的 Claude Code CLI 帳號。
+
+---
+
+向上探索，如需了解第 8 章至第 11 章（Git 
+實戰工作流、日常實用食譜、除錯復原與代理式程式設計）的動手操作細節，隨時告訴我！
+
+Resumed conversation: 225a4b0a-d6be-43df-b83e-30d837c1787c
