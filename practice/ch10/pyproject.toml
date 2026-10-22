@@ -1,0 +1,13 @@
+[project]
+name = "k119-ch10-practice"
+version = "0.1.0"
+description = "K119 第 10 章：除錯與復原練習"
+requires-python = ">=3.10"
+dependencies = []
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

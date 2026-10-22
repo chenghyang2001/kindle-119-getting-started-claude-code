@@ -1,0 +1,66 @@
+#!/bin/bash
+# pre-push hook：把即將推送的 diff 交給 claude -p 做資安審查
+#   回 BLOCK → exit 1 擋下推送；回 OK → exit 0 放行
+# 安裝：cp scripts/pre-push .git/hooks/pre-push && chmod +x .git/hooks/pre-push
+# 模擬：printf '<local_ref> <local_sha> <remote_ref> <remote_sha>\n' | .git/hooks/pre-push origin url
+#       或 .git/hooks/pre-push --diff-file <檔案>（直接審查指定 diff，方便測試）
+set -euo pipefail
+
+# 清掉 CLAUDE 開頭的環境變數，避免在 Claude Code session 內觸發時被當成巢狀 session
+for var_name in $(env | grep -o '^CLAUDE[A-Za-z0-9_]*' || true); do
+  unset "$var_name"
+done
+
+ZERO_SHA="0000000000000000000000000000000000000000"
+EMPTY_TREE="$(git hash-object -t tree /dev/null)"
+
+collect_diff_from_stdin() {
+  # git 透過 stdin 每行給一組：<local ref> <local sha> <remote ref> <remote sha>
+  local local_ref local_sha remote_ref remote_sha base
+  while read -r local_ref local_sha remote_ref remote_sha; do
+    [ -z "${local_sha:-}" ] && continue
+    [ "$local_sha" = "$ZERO_SHA" ] && continue          # 刪除遠端分支，沒有新內容
+    if [ "$remote_sha" = "$ZERO_SHA" ]; then base="$EMPTY_TREE"; else base="$remote_sha"; fi
+    git diff "$base" "$local_sha"
+  done
+}
+
+if [ "${1:-}" = "--diff-file" ]; then
+  diff_file="${2:-}"
+  [ -f "$diff_file" ] || { echo "錯誤：找不到 diff 檔 $diff_file" >&2; exit 1; }
+  push_diff="$(cat "$diff_file")"
+else
+  push_diff="$(collect_diff_from_stdin)"
+fi
+
+if [ -z "$push_diff" ]; then
+  echo "[pre-push] 沒有要審查的變更，放行"
+  exit 0
+fi
+command -v claude >/dev/null || { echo "[pre-push] 錯誤：找不到 claude CLI，保守起見擋下" >&2; exit 1; }
+
+prompt="你是資安審查員。檢查下面這份 git diff「新增的行」有沒有資安問題：
+寫死的密碼／API key／token／私鑰、SQL 注入、命令注入、關閉 TLS 驗證、eval 使用者輸入等。
+輸出格式（嚴格遵守）：第一行只能是 BLOCK 或 OK 這一個字；第二行起用繁體中文一兩句說明原因。
+只要有任何寫死的機密就必須回 BLOCK。
+
+\`\`\`diff
+$push_diff
+\`\`\`"
+
+echo "[pre-push] Claude 資安審查中..." >&2
+if ! review_output="$(printf '%s' "$prompt" | claude -p --output-format text)"; then
+  echo "[pre-push] 錯誤：claude -p 執行失敗，保守起見擋下（可用 git push --no-verify 自行承擔風險略過）" >&2
+  exit 1
+fi
+
+verdict="$(printf '%s\n' "$review_output" | grep -m1 -v '^[[:space:]]*$' | tr -d '[:space:]*`')"
+echo "----- Claude 審查結果 -----"
+printf '%s\n' "$review_output"
+echo "---------------------------"
+
+case "$verdict" in
+  OK)    echo "[pre-push] OK：放行"; exit 0 ;;
+  BLOCK) echo "[pre-push] BLOCK：推送已擋下" >&2; exit 1 ;;
+  *)     echo "[pre-push] 無法判讀審查結果（$verdict），保守起見擋下" >&2; exit 1 ;;
+esac

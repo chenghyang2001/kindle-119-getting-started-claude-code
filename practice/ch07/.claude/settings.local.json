@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "input=$(cat); tool=$(printf '%s' \"$input\" | jq -r '.tool_name // \"?\"' 2>/dev/null); file=$(printf '%s' \"$input\" | jq -r '.tool_input.file_path // \"?\"' 2>/dev/null); echo \"$(date '+%Y-%m-%d %H:%M:%S') PostToolUse tool=${tool:-?} file=${file:-?}\" >> \"${CLAUDE_PROJECT_DIR:-.}/.claude/hook.log\""
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+node_modules/
+dist/
+*.tsbuildinfo
+.env
+*.stackdump
+core
+*.core
+*.dmp
+.claude/session-state.md

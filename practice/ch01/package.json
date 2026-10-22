@@ -1,0 +1,14 @@
+{
+  "name": "k119-ch01-practice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "K119 第 1 章練習：最小 Express 專案（users / orders 模組）",
+  "main": "src/app.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "smoke": "node scripts/smoke-test.js"
+  },
+  "dependencies": {
+    "express": "^4.22.3"
+  }
+}

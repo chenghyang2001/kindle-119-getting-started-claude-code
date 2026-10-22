@@ -1,0 +1,20 @@
+{
+  "name": "k119-ch03-practice",
+  "version": "1.0.0",
+  "private": true,
+  "description": "K119 第 3 章：提問的藝術 — processOrder 重構演練",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^26.6.5",
+    "jest": "^30.5.2",
+    "ts-jest": "^29.4.15",
+    "typescript": "^5.9.3"
+  }
+}

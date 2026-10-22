@@ -1,0 +1,9 @@
+.venv/
+__pycache__/
+.pytest_cache/
+*.stackdump
+core
+*.core
+*.dmp
+.env
+.claude/session-state.md

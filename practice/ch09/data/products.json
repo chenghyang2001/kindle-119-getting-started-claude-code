@@ -1,0 +1,74 @@
+[
+  {
+    "sku": "PEN-001",
+    "name": "藍色原子筆",
+    "category": "文具",
+    "price": 15,
+    "quantity": 120,
+    "updatedAt": "2026-10-01"
+  },
+  {
+    "sku": "PEN-002",
+    "name": "紅色原子筆",
+    "category": "文具",
+    "price": 15,
+    "quantity": 80,
+    "updatedAt": "2026-10-01"
+  },
+  {
+    "sku": "NB-A5",
+    "name": "A5 筆記本, 方格",
+    "category": "文具",
+    "price": 45.5,
+    "quantity": 60,
+    "updatedAt": "2026-10-02"
+  },
+  {
+    "sku": "TEA-500",
+    "name": "綠茶 500ml",
+    "category": "飲料",
+    "price": 25,
+    "quantity": 200,
+    "updatedAt": "2026-10-03"
+  },
+  {
+    "sku": "COF-330",
+    "name": "拿鐵 \"無糖\" 330ml",
+    "category": "飲料",
+    "price": 35,
+    "quantity": 150,
+    "updatedAt": "2026-10-03"
+  },
+  {
+    "sku": "USB-C-1M",
+    "name": "USB-C 充電線 1m",
+    "category": "3C 配件",
+    "price": 199,
+    "quantity": 40,
+    "updatedAt": "2026-10-05"
+  },
+  {
+    "sku": "BAT-AA4",
+    "name": "三號電池 4入",
+    "category": "3C 配件",
+    "price": 89,
+    "quantity": 0,
+    "updatedAt": "2026-10-06"
+  },
+  {
+    "sku": "TAPE-18",
+    "name": "透明膠帶 18mm",
+    "category": "文具",
+    "price": 20,
+    "quantity": 95,
+    "updatedAt": "2026-10-07"
+  },
+  {
+    "sku": "SNK-CHIP",
+    "name": "洋芋片 原味",
+    "category": "零食",
+    "price": 30,
+    "quantity": 70,
+    "updatedAt": "2026-10-08"
+  }
+]

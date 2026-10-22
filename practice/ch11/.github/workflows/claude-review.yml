@@ -1,0 +1,73 @@
+# 範本：PR 自動審查 + 每週排程自動開 PR（K119 第 11 章）
+# ⚠️ 本練習只放範本，未建 repo、未設定 secret，不會實際執行。
+# 啟用前需在 repo Settings → Secrets 設定 ANTHROPIC_API_KEY（只放 GitHub Secrets，不放本機全域環境變數）。
+name: Claude Review
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  schedule:
+    - cron: "0 1 * * 1"   # 每週一 01:00 UTC（台灣 09:00）
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  security-review:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: 安裝 Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+      - name: 用 pre-push 同一支腳本審查 PR diff
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -euo pipefail
+          git diff "origin/${{ github.base_ref }}...HEAD" > pr.diff
+          bash scripts/pre-push --diff-file pr.diff | tee review.txt
+      - name: 把審查結果留言到 PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          [ -f review.txt ] || exit 0
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file review.txt
+
+  weekly-perf-pr:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - name: 安裝 Claude Code CLI
+        run: npm install -g @anthropic-ai/claude-code
+      - name: 產生效能審查報告
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          set -euo pipefail
+          for target_file in src/*.py; do
+            bash scripts/review.sh "$target_file"
+          done
+      - name: 開 PR（報告放在 reports/）
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          branch_name="bot/perf-review-$(date +%Y%m%d)"
+          git config user.name "claude-review-bot"
+          git config user.email "claude-review-bot@users.noreply.github.com"
+          git switch -c "$branch_name"
+          git add reports/
+          git diff --cached --quiet && { echo "沒有新報告"; exit 0; }
+          git commit -m "新增每週效能審查報告"
+          git push -u origin "$branch_name"
+          gh pr create --title "每週效能審查報告 $(date +%F)" \
+            --body "由排程自動產生，請人工確認後再合併。" --base "${{ github.event.repository.default_branch }}"
