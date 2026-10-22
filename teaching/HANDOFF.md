@@ -13,3 +13,4 @@
 | 03 | 2026-10-22 | 10 分 | 三步各自 commit，但計畫沒經人工審核；交易用假 db 快照回滾；npm 預設裝 TypeScript 7 與 ts-jest 不相容，自動降到 5.9.3（耗時主因） |
 | 04 | 2026-10-22 | 3 分 | 舊專案與 bug 是自己先造的，探索/找原因少了真正摸索；Excel exporter 用 TSV 模擬；pytest 1 failed → 15 passed，doctest 3 passed |
 | 05 | 2026-10-22 | 3 分 | Redis 換記憶體 store、時鐘可注入免真等 60 秒；TDD 紅燈 commit 是模組不存在的 collection 錯誤；43 → 56 passed |
+| 06 | 2026-10-22 | 5 分 | 實裝 React 19／Vite 8／TS 7（較書新）；骨架手寫不用 npm create vite；用 claude -p 取代互動會話產元件＋hook；內層 claude -p 觸發本機全域 Stop hook 自動 commit；全域 CLAUDE.md 只寫範本到 templates/，md5 確認未變 |
